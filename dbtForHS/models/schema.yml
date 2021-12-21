@@ -1,0 +1,34 @@
+
+version: 2
+
+sources:
+  - name: RawSource
+    description: These tables hold the raw data from the files where each line of the file is one record.
+    database: dbtTest
+    schema: RawSource
+    tables:
+      - name: DummyData_Brooke_File1_dbt
+        description: First dummy file
+      - name: DummyData_Brooke_File2_dbt
+        description: Second dummy file
+  - name: Lookups
+    description: These tables hold all the lookup data needed for analytics
+    database: dbtTest
+    schema: dbo
+    tables:
+      - name: MediSpanA1_Sample
+      - name: MediSpanR_Sample
+      
+models:
+  - name: Dummy_Data_dbt_05_Staging
+    description: This table holds all the claim records with the raw data along with transformed values for ease of analytics.
+    columns:
+      - name: CarrierID
+        description: Populated with the carrier ID associated to the patient at the time the prescription was filled which comes from the RxClaim system OR the benefactor client ID from Quantum Leap.
+        tests:
+          - not_null
+      - name: GenericBrandIndicator
+        description: Distinguishes if product priced as Generic or Branded product as defined by the processor
+        tests:
+          - accepted_values:
+              values: ['M','O','N','Y','Z','X']
